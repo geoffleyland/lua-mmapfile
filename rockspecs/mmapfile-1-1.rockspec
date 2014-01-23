@@ -15,7 +15,7 @@ description =
 }
 dependencies =
 {
-    'lua == 5.1',               -- In fact this should be "luajit >= 2.0.0"
+    'lua == 5.1',               -- should be "luajit >= 2.0.0"
     'ljsyscall >= 0.9',
 }
 build =
