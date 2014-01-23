@@ -1,4 +1,4 @@
-# Lua-mmapfile - A simple interface for mmaping files
+# Lua-mmapfile - A simple interface to mmap
 
 ## 1. What?
 

@@ -1,6 +1,6 @@
 --- A simple interface to mmap.
---  mmapfile provides a way of quickly storing and loading data that's
---  already in some kind of in-memory binary format.
+--  mmapfile uses `mmap` to provide a way of quickly storing and loading data
+--  that's already in some kind of in-memory binary format.
 --
 --  `create` creates a new file and maps new memory to that file.  You can
 --  then write to the memory to write to the file.
