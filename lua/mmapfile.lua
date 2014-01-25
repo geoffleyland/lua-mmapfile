@@ -192,8 +192,11 @@ end
 local function gcopen(
   filename,     -- string: name of the file to open.
   type,         -- ?string: type to allocate
-  mode)         -- ?string: open mode for the file "r" or "rw"
-  local addr, size = open(filename, type, mode)
+  mode,         -- ?string: open mode for the file "r" or "rw"
+  size,         -- ?integer: size to map (in multiples of type).  Default
+                -- is file size
+  offset)       -- ?integer: offset into the file (default 0)
+  local addr, size = open(filename, type, mode, size, offset)
   return ffi.gc(addr, close), size
 end
 
