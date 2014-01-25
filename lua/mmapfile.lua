@@ -42,14 +42,16 @@ end
 --  @treturn pointer: the memory allocated.
 local function mmap_4G(
   size,         -- integer: size to allocate in bytes
-  fd,           -- integer: file descriptor to map to
   prot,         -- string: mmap's prot, as interpreted by syscall
-  flags)        -- string: mmap's flags, as interpreted by syscall
-
-  local base, step = 4 * 1024 * 1024 * 1024, 2^math.floor(math.log(tonumber(size)) / math.log(2))
+  flags,        -- string: mmap's flags, as interpreted by syscall
+  fd,           -- integer: file descriptor to map to
+  offset)       -- ?integer: offset into file to map
+  offset = offset or 0
+  local base = 4 * 1024 * 1024 * 1024
+  local step = 2^math.floor(math.log(tonumber(size)) / math.log(2))
   local addr
   while true do
-    addr = S.mmap(ffi.cast("void*", base), size, prot, flags, fd, 0)
+    addr = S.mmap(ffi.cast("void*", base), size, prot, flags, fd, offset)
     if addr >= ffi.cast("void*", 4 * 1024 * 1024 * 1024) then break end
     S.munmap(addr, size)
     base = base + step
@@ -110,7 +112,7 @@ local function create(
   assert(fd:lseek(size-1, "set"))
   assert(fd:write(ffi.new("char[1]", 0), 1))
 
-  local addr = assert(mmap_4G(size, fd, "read, write", "file, shared"))
+  local addr = assert(mmap_4G(size, "read, write", "file, shared", fd))
 
   open_fds[tostring(ffi.cast("void*", addr))] = fd
 
@@ -144,8 +146,13 @@ end
 --  @treturn int: size of the file, in bytes or `type`s.
 local function open(
   filename,     -- string: name of the file to open.
-  type,         -- ?string: type to allocate
-  mode)         -- ?string: open mode for the file "r" or "rw"
+  type,         -- ?string: type to allocate (default void*)
+  mode,         -- ?string: open mode for the file "r" or "rw" (default "r")
+  size,         -- ?integer: size to map (in multiples of type).  Default
+                -- is file size
+  offset)       -- ?integer: offset into the file (default 0)
+  offset = offset or 0
+
   mode = mode or "r"
   local filemode, mapmode
   if mode == "r" then
@@ -159,16 +166,22 @@ local function open(
   end
 
   local fd = assert(S.open(filename, filemode, 0))
-  local st = assert(fd:stat())
 
-  local addr = assert(mmap_4G(st.size, fd, mapmode, "file, shared"))
+  if not size then
+    local st = assert(fd:stat())
+    size = st.size
+  elseif type then
+    size = size * ffi.sizeof(type)
+  end
+
+  local addr = assert(mmap_4G(size, mapmode, "file, shared", fd, offset))
 
   open_fds[tostring(ffi.cast("void*", addr))] = fd
 
   if type then
-    return ffi.cast(type.."*", addr), st.size / ffi.sizeof(type)
+    return ffi.cast(type.."*", addr), size / ffi.sizeof(type)
   else
-    return addr, st.size
+    return addr, size
   end
 end
 
