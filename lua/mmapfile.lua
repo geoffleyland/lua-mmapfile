@@ -165,7 +165,10 @@ local function open(
     return nil, "unknown read/write mode"
   end
 
-  local fd = assert(S.open(filename, filemode, 0))
+  local fd, message = S.open(filename, filemode, 0)
+  if not fd then
+    error(("mmapfile.open: Error opening %s: %s"):format(filename, message))
+  end
 
   if not size then
     local st = assert(fd:stat())
