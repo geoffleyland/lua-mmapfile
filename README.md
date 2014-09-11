@@ -14,9 +14,16 @@ a pointer to the memory and the length of the file.
 `close` syncs memory to the file, closes the file, and deletes the
 mapping between the memory and the file.
 
-The "gc" variants of `create` and `open` (`gccreate` and `gcopen`) set
-up a garbage collection callback for the pointer so that the file is
-correctly closed when the pointer is no longer referenced.  Not
+`malloc` maps anonymous memory (not mapped to a file), and so acts like
+malloc.  The advantage is that we can get memory above 4G, but the BIG
+disadvantage is that mmap is not a high-perfomance allocator.  Only use this
+infrequently for big blocks of memory.  It's a nasty hack.
+
+`free` frees memory mmapped by `malloc`
+
+The "gc" variants of `create`, `open` and `malloc` (`gccreate`, `gcopen` and 
+`gcmalloc`) set up a garbage collection callback for the pointer so that the
+file is correctly closed when the pointer is no longer referenced.  Not
 appropriate if you might be storing the pointer in C, referencing it from
 unmanaged memory, or casting it to another type!
 

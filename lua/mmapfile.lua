@@ -62,6 +62,63 @@ end
 
 ------------------------------------------------------------------------------
 
+local malloced_sizes = {}
+
+
+--- "Map" some anonymous memory that's not mapped to a file.
+--  This makes mmap behave a bit like malloc, except that we can persuade it
+--  to give us memory above 4G, and malloc will be a very, very slow allocator
+--  so only use it infrequently on big blocks of memory.
+--  This is really just a hack to get us memory above 4G.  There's probably a
+--  better solution.
+--  @treturn pointer: the memory allocated.
+local function malloc(
+  size,         -- integer: number of bytes or `type`s to allocate.
+  type,         -- ?string: type to allocate
+  data)         -- ?pointer: data to copy to the mapped area.
+ 
+  if type then
+    size = size * ffi.sizeof(type)
+  end
+
+  local addr = assert(mmap_4G(size, "read, write", "anon, shared", fd))
+
+  malloced_sizes[tostring(ffi.cast("void*", addr))] = size
+
+  if data then
+    ffi.copy(addr, data, size)
+  end
+
+  if type then
+    return ffi.cast(type.."*", addr)
+  else
+    return addr
+  end
+end
+
+
+--- Free memory mapped with mmapfile.malloc
+--  Just munmaps the memory.
+local function free(
+  addr)         -- pointer: the mapped address to unmap.
+  local s = tostring(ffi.cast("void*", addr))
+  local size = assert(malloced_sizes[s], "no mmapped block at this address")
+  assert(S.munmap(addr, size))
+end
+
+
+--- Same as malloc, but set up a GC cleanup for the memory.
+--  @treturn pointer: the memory allocated
+local function gcmalloc(
+  size,         -- integer: number of bytes or `type`s to allocate.
+  type,         -- ?string: type to allocate
+  data)         -- ?pointer: data to copy to the mapped area.
+  return ffi.gc(malloc(size, type, data), free)
+end
+
+
+------------------------------------------------------------------------------
+
 local open_fds = {}
 
 
@@ -208,6 +265,9 @@ end
 
 return
 {
+  free = free,
+  malloc = malloc,
+  gcmalloc = gcmalloc,
   create = create,
   gccreate = gccreate,
   open = open,

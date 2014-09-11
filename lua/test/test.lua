@@ -15,4 +15,7 @@ assert(size == 1)
 assert(ptr2.a == 1)
 assert(ptr2.b == 1.5)
 
+assert(mmapfile.gcmalloc(4096) >= ffi.cast("void*", 4 * 1024 * 1024 * 1024))
+
+
 io.stderr:write("Test passed\n")
