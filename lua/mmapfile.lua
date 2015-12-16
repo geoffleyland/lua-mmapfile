@@ -166,6 +166,9 @@ local function create(
     size = size * ffi.sizeof(type)
   end
 
+  -- lseek gets stroppy if we try to seek the -1th byte, so let's just say
+  -- all files are at least one byte, even if theres's no actual data.
+  size = math.max(size, 1)
   assert(fd:lseek(size-1, "set"))
   assert(fd:write(ffi.new("char[1]", 0), 1))
 
@@ -239,7 +242,7 @@ local function open(
   open_fds[tostring(ffi.cast("void*", addr))] = fd
 
   if type then
-    return ffi.cast(type.."*", addr), size / ffi.sizeof(type)
+    return ffi.cast(type.."*", addr), math.floor(size / ffi.sizeof(type))
   else
     return addr, size
   end
