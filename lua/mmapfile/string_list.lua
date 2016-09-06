@@ -29,7 +29,7 @@ function string_list:write(filename)
   local string_ptr = mmapfile.gccreate(filename, self.size, "char")
 
   local offset = 0
-  for i, s in ipairs(self.strings) do
+  for _, s in ipairs(self.strings) do
     self.map[s] = offset
     ffi.copy(string_ptr + offset, s)
     offset = offset + #s + 1
@@ -41,6 +41,22 @@ end
 
 function string_list:offset(s)
   return self.map[s]
+end
+
+
+------------------------------------------------------------------------------
+
+local string_file = {}
+string_file.__index = string_file
+
+function string_list.read(filename)
+  local o = { string_ptr = mmapfile.gcopen(filename, "char") }
+  return setmetatable(o, string_file)
+end
+
+
+function string_file:get(index)
+  return ffi.string(self.string_ptr + index)
 end
 
 
