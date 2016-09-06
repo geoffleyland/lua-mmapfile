@@ -101,6 +101,46 @@ describe("mmap", function()
 end)
 
 
+describe("mmap-rewrite", function()
+  local mmapfile = require"mmapfile"
+
+  test("mmap", function()
+    local ptr = assert(mmapfile.create("test7", 1024, "uint32_t"))
+    for i = 0, 1023 do
+      ptr[i] = i + 7
+    end
+    mmapfile.close(ptr)
+    local size
+    ptr, size = mmapfile.open("test7", "uint32_t", "rw")
+    assert.equal(1024, size)
+    for i = 0, 1023 do
+      assert.equal(i+7, ptr[i])
+    end
+    for i = 0, 1023 do
+      ptr[i] = i + 8
+    end
+    mmapfile.close(ptr)
+    ptr, size = mmapfile.open("test7", "uint32_t", "rw")
+    assert.equal(1024, size)
+    for i = 0, 1023 do
+      assert.equal(i+8, ptr[i])
+    end
+    mmapfile.close(ptr)
+  end)
+
+  test("can't create file", function()
+    assert.has_error(function() mmapfile.create("there_is_no_directory_with_this_name/test", 1024, "uint32_t") end,
+        errors.CREATE_BAD_DIRECTORY)
+  end)
+
+  test("can't open file", function()
+    assert.has_error(function() mmapfile.open("this_file_doesnt_exist", "uint32_t") end,
+        errors.OPEN_BAD_FILE)
+  end)
+end)
+
+
+
 describe("gcmmap", function()
   local mmapfile = require"mmapfile"
 
