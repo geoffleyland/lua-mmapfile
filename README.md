@@ -1,6 +1,7 @@
 # Lua-mmapfile - A simple interface to mmap
 
-[![Build Status](https://travis-ci.org/geoffleyland/lua-mmapfile.svg?branch=master)](https://travis-ci.org/geoffleyland/lua-mmapfile)
+[![Unix Build Status](https://travis-ci.org/geoffleyland/lua-mmapfile.svg?branch=master)](https://travis-ci.org/geoffleyland/lua-mmapfile)
+[![Windows Build status](https://ci.appveyor.com/api/projects/status/k553fj0isidhmkoc?svg=true)](https://ci.appveyor.com/project/geoffleyland/lua-mmapfile)
 [![Coverage Status](https://coveralls.io/repos/github/geoffleyland/lua-mmapfile/badge.svg?branch=master)](https://coveralls.io/github/geoffleyland/lua-mmapfile?branch=master)
 
 ## 1. What?
