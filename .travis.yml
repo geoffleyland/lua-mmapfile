@@ -19,9 +19,9 @@ install:
   - luarocks install ljsyscall
 
 script:
-  - luacheck lua
+  - luacheck src-lua
   - luacheck --std max+busted spec
   - busted --run=travis --coverage .
 
 after_success:
-  - luacov-coveralls -i lua
+  - luacov-coveralls -i src%-lua
