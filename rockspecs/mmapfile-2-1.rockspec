@@ -1,9 +1,10 @@
 package = "mmapfile"
-version = "scm-2"
+version = "2-1"
 source =
 {
   url = "git://github.com/geoffleyland/lua-mmapfile.git",
   branch = "master",
+  tag = "v2",
 }
 description =
 {
