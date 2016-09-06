@@ -114,10 +114,13 @@ describe("gcmmap", function()
 
     collectgarbage()
 
-    local ptr, size = mmapfile.open("test3", "uint32_t")
-    assert.equal(1024, size)
-    for i = 0, 1023 do
-      assert.equal(i+4, ptr[i])
+    do
+      local ptr, size = mmapfile.gcopen("test3", "uint32_t")
+      assert.equal(1024, size)
+      for i = 0, 1023 do
+        assert.equal(i+4, ptr[i])
+      end
     end
+    collectgarbage()
   end)
 end)
