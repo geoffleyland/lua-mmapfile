@@ -1,0 +1,14 @@
+environment:
+  matrix:
+  - LUA: "luajit 2.0"
+  - LUA: "luajit 2.1"
+
+before_build:
+  - set PATH=C:\Python27\Scripts;%PATH% # Add directory containing 'pip' to PATH
+  - pip install hererocks
+  - hererocks env --%LUA% -rlatest
+  - call env\bin\activate
+  - luarocks install busted
+
+test_script:
+  - busted
