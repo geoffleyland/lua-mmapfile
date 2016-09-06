@@ -11,7 +11,7 @@ before_build:
   - luarocks install busted
 
 build_script:
-  - dir
+  - luarocks make rockspecs/mmapfile-scm-2.rockspec
 
 test_script:
   - busted .

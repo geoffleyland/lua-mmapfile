@@ -16,7 +16,7 @@ install:
   - luarocks install busted
   - luarocks install luacov
   - luarocks install luacov-coveralls
-  - luarocks install ljsyscall
+  - luarocks make rockspecs/mmapfile-scm-2.rockspec
 
 script:
   - luacheck src-lua
