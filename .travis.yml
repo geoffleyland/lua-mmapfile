@@ -16,7 +16,7 @@ install:
   - luarocks install busted
   - luarocks install luacov
   - luarocks install luacov-coveralls
-  - luarocks install syscall
+  - luarocks install ljsyscall
 
 script:
   - luacheck lua
