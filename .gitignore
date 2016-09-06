@@ -1,3 +1,5 @@
 .DS_store
 doc
-lua/mmapfile-test
+test
+luacov.report.out
+luacov.stats.out

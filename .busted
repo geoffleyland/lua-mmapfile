@@ -1,0 +1,16 @@
+return
+{
+  default =
+  {
+    verbose = true,
+    lpath   = "./lua/?.lua",
+    ROOT    = "./spec",
+    output  = "utfTerminal",
+  },
+  travis =
+  {
+    lpath   = "./lua/?.lua",
+    ROOT    = "./spec",
+    output  = "TAP",
+  }
+}

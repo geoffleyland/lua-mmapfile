@@ -1,0 +1,26 @@
+language: python
+sudo: false
+
+env:
+  - LUA='luajit=2.0'
+  - LUA='luajit=2.1' 
+
+before_install:
+  - pip install hererocks
+  - hererocks lua_install -r^ --$LUA
+  - export PATH=$PATH:$PWD/lua_install/bin
+
+
+install:
+  - luarocks install luacheck
+  - luarocks install busted
+  - luarocks install luacov
+  - luarocks install luacov-coveralls
+
+script:
+  - luacheck lua
+  - luacheck --std max+busted spec
+  - busted --run=travis --coverage .
+
+after_success:
+  - luacov-coveralls -i lua
