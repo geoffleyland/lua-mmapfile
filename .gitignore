@@ -3,3 +3,4 @@ doc
 test*
 luacov.report.out
 luacov.stats.out
+mmapfile*.src.rock
