@@ -1,9 +1,13 @@
 # Lua-mmapfile - A simple interface to mmap
 
+[![Build Status](https://travis-ci.org/geoffleyland/lua-mmapfile.svg?branch=master)](https://travis-ci.org/geoffleyland/lua-mmapfile)
+[![Coverage Status](https://coveralls.io/repos/github/geoffleyland/lua-mmapfile/badge.svg?branch=master)](https://coveralls.io/github/geoffleyland/lua-mmapfile?branch=master)
+
 ## 1. What?
 
-mmapfile uses `mmap` to provide a way of quickly storing and loading data
-that's already in some kind of in-memory binary format.
+mmapfile uses `mmap` on unix and `MapViewOfFile` on Windows to provide a way
+of quickly storing and loading data that's already in some kind of in-memory
+binary format.
 
 `create` creates a new file and maps new memory to that file.  You can
 then write to the memory to write to the file.
@@ -55,12 +59,11 @@ For more details `make doc` or `ldoc lua --all`.
 
 ## 3. Requirements
 
-[LuaJIT](http://luajit.org) and
-[ljsyscall](https://github.com/justincormack/ljsyscall)
++ [LuaJIT](http://luajit.org) and
++ [ljsyscall](https://github.com/justincormack/ljsyscall) on Unix
 
 
 ## 4. Issues
 
 + Should probably have an option for directly mapping existing memory, but
   I don't know enough about page boundaries.
-+ No windows support
