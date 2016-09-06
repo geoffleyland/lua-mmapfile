@@ -32,16 +32,24 @@ describe("malloc", function()
     for i = 0, 1023 do
       assert.equal(i+1, ptr[i])
     end
+    local ptr2 = assert(mmapfile.malloc(1024, "long", ptr))
+    for i = 0, 1023 do
+      assert.equal(i+1, ptr2[i])
+    end
+
     mmapfile.free(ptr)
+    mmapfile.free(ptr2)
   end)
 
   test("gcmalloc", function()
-    local ptr = assert(mmapfile.gcmalloc(1024, "long"))
-    for i = 0, 1023 do
-      ptr[i] = i + 2
-    end
-    for i = 0, 1023 do
-      assert.equal(i+2, ptr[i])
+    do
+      local ptr = assert(mmapfile.gcmalloc(1024, "long"))
+      for i = 0, 1023 do
+        ptr[i] = i + 2
+      end
+      for i = 0, 1023 do
+        assert.equal(i+2, ptr[i])
+      end
     end
     collectgarbage()
   end)
@@ -64,7 +72,21 @@ describe("mmap", function()
       assert.equal(i+3, ptr[i])
     end
 
+    local ptr2 = assert(mmapfile.create("test2", 1024, "uint32_t", ptr))
     mmapfile.close(ptr)
+
+    for i = 0, 1023 do
+      assert.equal(i+3, ptr2[i])
+    end
+    mmapfile.close(ptr2)
+
+    ptr2, size = mmapfile.open("test2", "uint32_t")
+    assert.equal(1024, size)
+    for i = 0, 1023 do
+      assert.equal(i+3, ptr2[i])
+    end
+
+    mmapfile.close(ptr2)
   end)
 
   test("can't create file", function()
@@ -75,5 +97,27 @@ describe("mmap", function()
   test("can't open file", function()
     assert.has_error(function() mmapfile.open("this_file_doesnt_exist", "uint32_t") end,
         errors.OPEN_BAD_FILE)
+  end)
+end)
+
+
+describe("gcmmap", function()
+  local mmapfile = require"mmapfile"
+
+  test("mmap", function()
+    do
+      local ptr = assert(mmapfile.gccreate("test3", 1024, "uint32_t"))
+      for i = 0, 1023 do
+        ptr[i] = i + 4
+      end
+    end
+
+    collectgarbage()
+
+    local ptr, size = mmapfile.open("test3", "uint32_t")
+    assert.equal(1024, size)
+    for i = 0, 1023 do
+      assert.equal(i+4, ptr[i])
+    end
   end)
 end)

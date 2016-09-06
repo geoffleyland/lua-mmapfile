@@ -1,5 +1,5 @@
 .DS_store
 doc
-test
+test*
 luacov.report.out
 luacov.stats.out
