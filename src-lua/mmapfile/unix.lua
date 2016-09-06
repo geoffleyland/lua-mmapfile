@@ -50,7 +50,7 @@ local function mmap_4G(
   local base = 4 * 1024 * 1024 * 1024
   local step = 2^math.floor(math.log(tonumber(size)) / math.log(2))
   local addr
-  while true do
+  for _ = 1, 1024 do
     addr = S.mmap(ffi.cast("void*", base), size, prot, flags, fd, offset)
     if addr >= ffi.cast("void*", 4 * 1024 * 1024 * 1024) then break end
     S.munmap(addr, size)

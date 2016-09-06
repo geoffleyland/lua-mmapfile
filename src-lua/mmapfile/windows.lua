@@ -118,9 +118,9 @@ local function mmap_4G(
   offset)       -- ?integer: offset into file to map
   offset = offset or 0
   local base = 4 * 1024 * 1024 * 1024
-  local step = 2^math.floor(math.log(tonumber(size)) / math.log(2))
+  local step = 0x10000
   local addr
-  while true do
+  for _ = 1, 16 do
     addr = ffi.C.MapViewOfFileEx(map, access, 0, offset, size, ffi.cast("void*", base))
 
     if addr >= ffi.cast("void*", 4 * 1024 * 1024 * 1024) then break end
@@ -128,6 +128,7 @@ local function mmap_4G(
       ffi.C.UnmapViewOfFile(addr)
     end
     base = base + step
+    step = step * 2
   end
   return addr
 end
