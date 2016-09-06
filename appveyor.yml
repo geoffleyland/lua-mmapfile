@@ -11,6 +11,7 @@ before_build:
   - luarocks install busted
 
 build_script:
+  - dir
 
 test_script:
   - busted .
