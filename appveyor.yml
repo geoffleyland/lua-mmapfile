@@ -10,5 +10,7 @@ before_build:
   - call env\bin\activate
   - luarocks install busted
 
+build_script:
+
 test_script:
-  - busted
+  - busted .
