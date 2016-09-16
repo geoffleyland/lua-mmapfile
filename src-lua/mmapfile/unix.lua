@@ -20,6 +20,9 @@
 --  All memory is mapped above 4G to try to keep away from the memory space
 --  LuaJIT uses.
 
+-- (c) Copyright 2014-2016 Geoff Leyland.
+-- See LICENSE for license information
+
 local S = require"syscall"
 local ffi = require"ffi"
 

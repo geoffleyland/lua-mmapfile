@@ -1,3 +1,6 @@
+-- (c) Copyright 2014-2016 Geoff Leyland.
+-- See LICENSE for license information
+
 local ffi = require"ffi"
 local mmapfile = require"mmapfile"
 
