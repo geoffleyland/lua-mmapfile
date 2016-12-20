@@ -123,7 +123,7 @@ local function mmap_4G(
   local base = 4 * 1024 * 1024 * 1024
   local step = 0x10000
   local addr
-  for _ = 1, 16 do
+  for _ = 1, 32 do
     addr = ffi.C.MapViewOfFileEx(map, access, 0, offset, size, ffi.cast("void*", base))
 
     if addr >= ffi.cast("void*", 4 * 1024 * 1024 * 1024) then break end
@@ -131,7 +131,7 @@ local function mmap_4G(
       ffi.C.UnmapViewOfFile(addr)
     end
     base = base + step
-    step = step * 2
+    step = math.min(2^26, step * 2) -- 64MB should be a pretty good step, right?
   end
   return addr
 end
@@ -308,12 +308,12 @@ local function open(
 
   local map = ffi.C.CreateFileMappingA(fd, nil, mapmode, 0, size, nil)
   if map == nil then
-    error(("mmapfile.create: Error creating %s: %s"):format(filename, last_error_string()))
+    error(("mmapfile.open: Error opening %s: %s"):format(filename, last_error_string()))
   end
 
   local addr = mmap_4G(map, 0, ptrmode, offset)
   if addr == nil then
-    error(("mmapfile.create: Error creating %s: %s"):format(filename, last_error_string()))
+    error(("mmapfile.open: Error opening %s: %s"):format(filename, last_error_string()))
   end
 
   open_fds[tostring(ffi.cast("void*", addr))] = { fd = fd, map = map }
