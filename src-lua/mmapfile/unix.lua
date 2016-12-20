@@ -79,7 +79,7 @@ local function malloc(
   size,         -- integer: number of bytes or `type`s to allocate.
   type,         -- ?string: type to allocate
   data)         -- ?pointer: data to copy to the mapped area.
- 
+
   if type then
     size = size * ffi.sizeof(type)
   end
@@ -153,7 +153,7 @@ local function create(
   type,         -- ?string: type to allocate
   data)         -- ?pointer: data to copy to the mapped area.
   local fd, message = S.open(filename, "RDWR, CREAT", "RUSR, WUSR, RGRP, ROTH")
- 
+
   if not fd then
     error(("mmapfile.create: Error creating '%s': %s"):format(filename, message))
   end

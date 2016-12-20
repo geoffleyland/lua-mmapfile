@@ -152,7 +152,7 @@ local function malloc(
   size,         -- integer: number of bytes or `type`s to allocate.
   type,         -- ?string: type to allocate
   data)         -- ?pointer: data to copy to the mapped area.
- 
+
   if type then
     size = size * ffi.sizeof(type)
   end
