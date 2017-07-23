@@ -82,6 +82,8 @@ static const DWORD FILE_MAP_READ                     = 0x00000004;
 
 static const DWORD PAGE_READWRITE                    = 0x00000004;
 static const DWORD PAGE_READONLY                     = 0x00000002;
+
+static const DWORD FILE_SHARE_READ                   = 0x00000001;
 ]]
 
 local INVALID_HANDLE_VALUE = ffi.cast("HANDLE", -1)  -- I can't work out how to define this in the cdefs.
@@ -280,13 +282,15 @@ local function open(
   offset = offset or 0
 
   mode = mode or "r"
-  local filemode, mapmode, ptrmode
+  local filemode, sharemode, mapmode, ptrmode
   if mode == "r" then
     filemode = ffi.C.GENERIC_READ
+    sharemode = ffi.C.FILE_SHARE_READ
     mapmode = ffi.C.PAGE_READONLY
     ptrmode = ffi.C.FILE_MAP_READ
   elseif mode == "rw" then
     filemode = bit.bor(ffi.C.GENERIC_READ, ffi.C.GENERIC_WRITE)
+    sharemode = 0
     mapmode = ffi.C.PAGE_READWRITE
     ptrmode = ffi.C.FILE_MAP_ALL_ACCESS
   else
@@ -294,7 +298,7 @@ local function open(
   end
 
   local fd = ffi.C.CreateFileA(filename,
-    filemode, 0, nil, ffi.C.OPEN_EXISTING,
+    filemode, sharemode, nil, ffi.C.OPEN_EXISTING,
     bit.bor(ffi.C.FILE_ATTRIBUTE_ARCHIVE, ffi.C.FILE_FLAG_RANDOM_ACCESS), nil)
   if fd == INVALID_HANDLE_VALUE then
     error(("mmapfile.open: Error opening %s: %s"):format(filename, last_error_string()))
