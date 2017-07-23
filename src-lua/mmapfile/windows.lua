@@ -94,7 +94,9 @@ local INVALID_HANDLE_VALUE = ffi.cast("HANDLE", -1)  -- I can't work out how to 
 local error_buffer = ffi.new("char[1024]")
 local function last_error_string()
   local code = ffi.C.GetLastError()
-  local length = ffi.C.FormatMessageA(bit.bor(ffi.C.FORMAT_MESSAGE_FROM_SYSTEM, ffi.C.FORMAT_MESSAGE_IGNORE_INSERTS), nil, code, 0, error_buffer, 1023, nil)
+  local length = ffi.C.FormatMessageA(
+    bit.bor(ffi.C.FORMAT_MESSAGE_FROM_SYSTEM, ffi.C.FORMAT_MESSAGE_IGNORE_INSERTS),
+    nil, code, 0, error_buffer, 1023, nil)
   return ffi.string(error_buffer, length)
 end
 
