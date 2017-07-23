@@ -4,8 +4,10 @@ local both_error_messages =
 {
   CREATE_BAD_DIRECTORY =
   {
-    "mmapfile.create: Error creating 'there_is_no_directory_with_this_name/test': No such file or directory",
-    "mmapfile.create: Error creating 'there_is_no_directory_with_this_name/test': The system cannot find the path specified.\r\n"
+    "mmapfile.create: Error creating 'there_is_no_directory_with_this_name/test':"..
+      " No such file or directory",
+    "mmapfile.create: Error creating 'there_is_no_directory_with_this_name/test':"..
+      " The system cannot find the path specified.\r\n"
   },
   OPEN_BAD_FILE =
   {
